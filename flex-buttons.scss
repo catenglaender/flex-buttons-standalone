@@ -1,0 +1,65 @@
+@use "sass:map";
+
+// variables coming from general site design
+
+$basic-settings: (
+    $font-size: 1.2rem,
+    $button-color: lightblue,
+    $button-text-color: black,
+    $line-height: 1.2,
+    // button height is by default largely determined by this value
+    $input-height: 20px,
+    // the padding is only a small buffer for when the button contains multiple lines
+    $padding-small-x: .2rem,
+    $padding-small-y: .1rem
+);
+
+$button-colors: ();
+$button-size: ();
+
+//
+// Mandatory
+//
+@mixin button-base() {
+    // browser reset
+
+    // basic structure
+    display: inline-flex;
+    vertical-align: middle;
+
+    // general typography
+    text-align: center;
+}
+
+@mixin button-color() {
+    
+}
+
+@mixin button-size() {
+    min-height: ;
+    padding: map-get($general-settings, $padding-small-y) map-get($general-settings, $padding-small-y)
+}
+
+//
+// Optional
+//
+@mixin button-rounded() {
+
+}
+
+@mixin flex-button(
+    $button-bg__color,
+    $button-text__color,
+    $button-border__color: $button-bg-color,
+    $button-border__radius: 0,
+
+    $button--hover-bg-color,
+) {
+    background-color: $button-bg-color;
+    color: $button-text-color;
+    border: 1px solid $button-border-color;
+}
+
+button {
+    @include flex-button(red, white)
+}
