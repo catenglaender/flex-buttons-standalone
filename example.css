@@ -1,26 +1,3 @@
-@use "sass:map";
-
-//
-// BASIC SETTINGS
-// change to match design
-//
-$font-family: inherit !default;
-$font-size: inherit !default;
-$font-weight: inherit !default;
-$button-color: lightblue !default;
-$button-text-color: black !default;
-$button-style-outlined: false !default;
-$line-height: inherit !default;
-// button height is by default largely determined by this value
-$input-field-height: 20px !default;
-// the padding is only a small buffer for when the button contains multiple lines
-$padding-small-x: 10px !default;
-$padding-small-y: 5px !default;
-
-//
-// COLORS - FILLED BUTTONS
-// change optional, for more precise control
-//
 /*
 $btn__bg-color: $button-color !default;
 $btn__text-color: red !default;
@@ -42,37 +19,10 @@ $btn--active__bg-color: red !default;
 $btn--active__text-color: red !default;
 $btn--active__border-color: red !default;
 */
-
-@mixin make-button(
-    $button-color: $button-color,
-    $line-height: $line-height,
-    $font-size: $font-size,
-    $font-weight: $font-weight,
-
-    $btn__bg-color: $button-color,
-    $btn__text-color: red,
-    $btn__border-color: red
-    ) {
-    // basic structure
-    display: inline-flex;
-    vertical-align: middle;
-    user-select: none;
-
-    // general typography
-    text-align: center;
-    line-height: $line-height;
-    font-size: $font-size;
-    font-weight: $font-weight;
-    color: $btn__bg-color;
-}
-
-
-
-
 /*
 
 
-    
+
 
     //
     // SIZE
@@ -106,11 +56,11 @@ $btn--active__border-color: red !default;
 // Mandatory
 //
 @mixin button-base() {
-    
+
 }
 
 @mixin button-color() {
-    
+
 }
 
 @mixin button-size() {
@@ -143,3 +93,26 @@ button {
 }
 
 */
+.btn-default {
+  display: inline-flex;
+  vertical-align: middle;
+  user-select: none;
+  text-align: center;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: lightblue;
+}
+
+.btn-primary {
+  display: inline-flex;
+  vertical-align: middle;
+  user-select: none;
+  text-align: center;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  color: green;
+}
+
+/*# sourceMappingURL=example.css.map */

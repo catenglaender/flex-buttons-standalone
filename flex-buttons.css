@@ -1,7 +1,17 @@
-button {
-  background-color: red;
-  color: white;
-  border: 1px solid red;
-}
+/* Error: ("test": "eins", "test2": "drei") isn't a valid CSS value.
+ *    ,
+ * 58 | @debug "#{$button-colors}";
+ *    |           ^^^^^^^^^^^^^^
+ *    '
+ *   flex-buttons.scss 58:11  root stylesheet */
 
-/*# sourceMappingURL=flex-buttons.css.map */
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: (\"test\": \"eins\", \"test2\": \"drei\") isn't a valid CSS value.\a    \2577 \a 58 \2502  @debug \"#{$button-colors}\";\a    \2502            ^^^^^^^^^^^^^^\a    \2575 \a   flex-buttons.scss 58:11  root stylesheet";
+}

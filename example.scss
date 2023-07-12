@@ -1,0 +1,9 @@
+@use "flex-buttons" as btn;
+
+.btn-default {
+    @include btn.make-button()
+}
+
+.btn-primary {
+    @include btn.make-button($btn__bg-color: green)
+}
