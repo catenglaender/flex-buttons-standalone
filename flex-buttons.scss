@@ -1,145 +1,235 @@
 @use "sass:map";
+@use "sass:math";
+@use "sass:color";
+
+$debug-mode: false;
 
 //
 // BASIC SETTINGS
 // change to match design
+// these variables repeat at the beginning of mixin
 //
 $font-family: inherit !default;
 $font-size: inherit !default;
 $font-weight: inherit !default;
 $button-color: lightblue !default;
 $button-text-color: black !default;
+$text-decoration: none !default;
 $button-style-outlined: false !default;
+$border-size: 1px !default;
 $line-height: inherit !default;
 // button height is by default largely determined by this value
-$input-field-height: 20px !default;
-// the padding is only a small buffer for when the button contains multiple lines
+$input-field-height: 42px !default;
 $padding-small-x: 10px !default;
+// padding y is only a small buffer for when the button contains multiple lines
 $padding-small-y: 5px !default;
+$inner-spacing: math.div($padding-small-x, 2);
+
 
 //
-// COLORS - FILLED BUTTONS
-// change optional, for more precise control
+// TOOLS
 //
-/*
-$btn__bg-color: $button-color !default;
-$btn__text-color: red !default;
-$btn__border-color: red !default;
 
-$btn--hover__bg-color: red !default;
-$btn--hover__text-color: red !default;
-$btn--hover__border-color: red !default;
+// CONTRAST COLOR
+@function contrast-color($color, $dark-color, $light-color, $threshold: 55%) {
+    @if type-of($dark-color) !="color" or type-of($light-color) !="color" {
+        @error "You must input a color value.";
+    }
+    @if $debug-mode {
+        @if lightness($color) < $threshold {
+            @debug "#{$color}: #{lightness($color)} lightness pairs with light color for highest contrast.";
+        } @else {
+            @debug "#{$color}: #{lightness($color)} lightness pairs with dark color for highest contrast.";
+        }
+    }
+    @return if(lightness($color) < $threshold, $light-color, $dark-color);
+}
 
-$btn--disabled__bg-color: red !default;
-$btn--disabled__text-color: red !default;
-$btn--disabled__border-color: red !default;
+// FOCUS RING
+// This focus ring has an inner, middle and outer line
+$focus_color: black;
+$focus_contrast-outline_color: white;
+$focus_width: 3px;
+$focus_contrast-outline_width: 2px;
+$focus_ring: $focus_width solid $focus_color;
+$focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-outline_color;
 
-$btn--disabled--hover__bg-color: red !default;
-$btn--disabled--hover__text-color: red !default;
-$btn--disabled--hover__border-color: red !default;
+@mixin focus-ring() {
+    &:focus-visible {
+        position: relative; // so before element
+        // outer contrast line
+        outline: $focus_contrast-outline;
+        outline-offset: $focus_width + $focus_contrast-outline_width - 1px;
 
-$btn--active__bg-color: red !default;
-$btn--active__text-color: red !default;
-$btn--active__border-color: red !default;
-*/
+        &::after {
+            content: " ";
+            position: absolute;
+            top: -$focus_contrast-outline_width;
+            left: -$focus_contrast-outline_width;
+            right: -$focus_contrast-outline_width;
+            bottom: -$focus_contrast-outline_width;
+            // inner contrast line
+            border: $focus_contrast-outline;
+            // middle focus line
+            outline: $focus_ring;
+        }
+    }
 
-@mixin make-button(
-    $button-color: $button-color,
-    $line-height: $line-height,
-    $font-size: $font-size,
+    // these states indicate a selection and not keyboard focus
+    &:active,
+    &.engaged {
+        outline: none;
+    }
+}
+
+@mixin make-button( //
+    // Use any of these variables during include to customize the button style
+    //
+
+    // repeating BASIC SETTINGS so mixin can optionally override them
+    $set-basics: true,
+    $font-family: $font-family,
+    $button-font-size: $font-size,
     $font-weight: $font-weight,
+    $button-color: $button-color,
+    $button-text-color: $button-text-color,
+    $text-decoration: $text-decoration,
+    $button-style-outlined: $button-style-outlined,
+    $border-size: $border-size,
+    $line-height: $line-height,
+    $input-field-height: $input-field-height,
+    $padding-small-x: $padding-small-x,
+    $padding-small-y: $padding-small-y,
+    $inner-spacing: $inner-spacing,
 
-    $btn__bg-color: $button-color,
-    $btn__text-color: red,
-    $btn__border-color: red
-    ) {
-    // basic structure
-    display: inline-flex;
-    vertical-align: middle;
-    user-select: none;
-
-    // general typography
-    text-align: center;
-    line-height: $line-height;
-    font-size: $font-size;
-    font-weight: $font-weight;
-    color: $btn__bg-color;
-}
-
-
-
-
-/*
-
-
-    
-
-    //
     // SIZE
-    //
-    $btn__padding: ,
-    $btn__min-width: ,
-    $btn__font-size: ,
+    $set-size: true,
+    $height: $input-field-height,
+    $font-size: $button-font-size,
 
-    //
-    // DESIGN ELEMENTS
-    //
-    $btn-border-width: ,
-    $btn-border-radius: 0px,
+    // COLOR VARIABLES
+    $set-design: true,
+    $bg-color: $button-color,
+    $text-color: $button-text-color,
+    $border-color: $button-color,
 
-    $btn-shadows-enabled: false
-) !default;
+    $hover_bg-color: contrast-color($button-text-color, darken($bg-color, 10%), lighten($bg-color, 10%)),
+    $hover_text-color: $button-text-color,
+    $hover_border-color: $hover_bg-color,
 
-// Tools
+    $disabled_bg-color: contrast-color($button-text-color, color.scale($bg-color, $saturation: -80%, $lightness: -5%), color.adjust($bg-color, $saturation: -80%, $lightness: 10%)),
+    $disabled_text-color: color.scale($button-text-color, $alpha: -10%),
+    $disabled_border-color: contrast-color($button-text-color, color.scale($bg-color, $saturation: -80%, $lightness: -5%), color.adjust($bg-color, $saturation: -80%, $lightness: 10%)),
 
-@function is-map($value) {
-    @return type-of($value) == "map";
+    $disabled_hover_bg-color: contrast-color($button-text-color, color.scale($bg-color, $saturation: -80%, $lightness: -5%), color.adjust($bg-color, $saturation: -80%, $lightness: 10%)),
+    $disabled_hover_text-color: color.scale($button-text-color, $alpha: -10%),
+    $disabled_hover_border-color: contrast-color($button-text-color, color.scale($bg-color, $saturation: -80%, $lightness: -10%), color.adjust($bg-color, $saturation: 80%, $lightness: 20%)),
+
+    $active_bg-color: contrast-color($button-text-color, darken($bg-color, 20%), lighten($bg-color, 20%)),
+    $active_text-color: $button-text-color,
+    $active_border-color: $active_bg-color,
+
+    $engaged_bg-color: white,
+    $engaged_text-color: contrast-color($engaged_bg-color, #000, #fff),
+    $engaged_border-color: $bg-color,
+
+    // DESIGN ELMENTS
+    $engaged_border-width: 3px,
+
+    $hover_text-decoration: $text-decoration,
+
+    $hover_border-size: $border-size,
+
+    $active_border-size: $border-size,
+
+    $active_transform: scale(.95),
+
+    $hover_cursor: pointer,
+    $disabled_cursor: not-allowed) {
+
+    @if $set-basics {
+        // outside
+        display: inline-flex;
+        vertical-align: middle;
+
+        // inside
+        align-items: center;
+        cursor: $hover_cursor;
+        user-select: none;
+        touch-action: manipulation;
+
+        // general typography
+        font-family: $font-family;
+        text-align: center;
+        line-height: $line-height;
+        font-size: $font-size;
+        font-weight: $font-weight;
+        text-decoration: $text-decoration;
+    }
+
+    @if $set-size {
+        height: if($set-size, $input-field-height, null);
+
+        padding: if($set-size, $padding-small-y $padding-small-x, null);
+        gap: if($set-size, $inner-spacing, null);
+    }
+
+    @if $set-design {
+        // DEFAULT
+        background-color: $bg-color;
+        color: $text-color;
+        border: $border-size solid $border-color;
+
+        // HOVER
+        &:hover {
+            text-decoration: $hover_text-decoration;
+
+            background-color: $hover_bg-color;
+            color: $hover_text-color;
+            border: $hover_border-size solid $hover_border-color;
+        }
+
+        // KEYBOARD FOCUS
+        &:focus-visible {
+            @include focus-ring();
+        }
+
+        // ACTIVE (BEING PRESSED)
+        &:active {
+            transform: $active_transform;
+
+            background-color: $active_bg-color;
+            color: $active_text-color;
+            border: $active_border-size solid $active_border-color;
+        }
+
+        // DEACTIVATED
+        &[disabled],
+        fieldset[disabled] {
+            background-color: $disabled_bg-color;
+            border-color: $disabled_border-color;
+            color: $disabled_text-color;
+            cursor: $disabled_cursor;
+
+            &,
+            &:hover,
+            &:focus,
+            &:active,
+            &.active {
+                background-color: $disabled_hover_bg-color;
+                border-color: $disabled_hover_border-color;
+                color: $disabled_hover_text-color;
+
+                transform: none;
+            }
+        }
+
+        // ENGAGED (CHECKED)
+        &.engaged {
+            border-width: $engaged_border-width;
+            background-color: $engaged_bg-color;
+            border-color: $engaged_border-color;
+            color: $engaged_text-color;
+        }
+    }
 }
-
-// Button
-
-
-
-
-
-//
-// Mandatory
-//
-@mixin button-base() {
-    
-}
-
-@mixin button-color() {
-    
-}
-
-@mixin button-size() {
-    min-height: ;
-    padding: map-get($general-settings, $padding-small-y) map-get($general-settings, $padding-small-y)
-}
-
-//
-// Optional
-//
-@mixin button-rounded() {
-
-}
-
-@mixin flex-button(
-    $button-bg__color,
-    $button-text__color,
-    $button-border__color: $button-bg-color,
-    $button-border__radius: 0,
-
-    $button--hover-bg-color,
-) {
-    background-color: $button-bg-color;
-    color: $button-text-color;
-    border: 1px solid $button-border-color;
-}
-
-button {
-    @include flex-button(red, white)
-}
-
-*/

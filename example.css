@@ -1,118 +1,236 @@
-/*
-$btn__bg-color: $button-color !default;
-$btn__text-color: red !default;
-$btn__border-color: red !default;
-
-$btn--hover__bg-color: red !default;
-$btn--hover__text-color: red !default;
-$btn--hover__border-color: red !default;
-
-$btn--disabled__bg-color: red !default;
-$btn--disabled__text-color: red !default;
-$btn--disabled__border-color: red !default;
-
-$btn--disabled--hover__bg-color: red !default;
-$btn--disabled--hover__text-color: red !default;
-$btn--disabled--hover__border-color: red !default;
-
-$btn--active__bg-color: red !default;
-$btn--active__text-color: red !default;
-$btn--active__border-color: red !default;
-*/
-/*
-
-
-
-
-    //
-    // SIZE
-    //
-    $btn__padding: ,
-    $btn__min-width: ,
-    $btn__font-size: ,
-
-    //
-    // DESIGN ELEMENTS
-    //
-    $btn-border-width: ,
-    $btn-border-radius: 0px,
-
-    $btn-shadows-enabled: false
-) !default;
-
-// Tools
-
-@function is-map($value) {
-    @return type-of($value) == "map";
-}
-
-// Button
-
-
-
-
-
-//
-// Mandatory
-//
-@mixin button-base() {
-
-}
-
-@mixin button-color() {
-
-}
-
-@mixin button-size() {
-    min-height: ;
-    padding: map-get($general-settings, $padding-small-y) map-get($general-settings, $padding-small-y)
-}
-
-//
-// Optional
-//
-@mixin button-rounded() {
-
-}
-
-@mixin flex-button(
-    $button-bg__color,
-    $button-text__color,
-    $button-border__color: $button-bg-color,
-    $button-border__radius: 0,
-
-    $button--hover-bg-color,
-) {
-    background-color: $button-bg-color;
-    color: $button-text-color;
-    border: 1px solid $button-border-color;
-}
-
-button {
-    @include flex-button(red, white)
-}
-
-*/
 .btn-default {
   display: inline-flex;
   vertical-align: middle;
+  align-items: center;
+  cursor: pointer;
   user-select: none;
+  touch-action: manipulation;
+  font-family: inherit;
   text-align: center;
   line-height: inherit;
   font-size: inherit;
   font-weight: inherit;
-  color: lightblue;
+  text-decoration: none;
+  height: 42px;
+  padding: 5px 10px;
+  gap: 5px;
+  background-color: #4c6586;
+  color: #fff;
+  border: 1px solid #4c6586;
+}
+.btn-default:hover {
+  text-decoration: none;
+  background-color: #3a4c65;
+  color: #fff;
+  border: 1px solid #3a4c65;
+}
+.btn-default:focus-visible:focus-visible {
+  position: relative;
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+.btn-default:focus-visible:focus-visible::after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid white;
+  outline: 3px solid black;
+}
+.btn-default:focus-visible:active, .btn-default:focus-visible.engaged {
+  outline: none;
+}
+.btn-default:active {
+  transform: scale(0.95);
+  background-color: #273445;
+  color: #fff;
+  border: 1px solid #273445;
+}
+.btn-default[disabled],
+.btn-default fieldset[disabled] {
+  background-color: #5e6369;
+  border-color: #5e6369;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: not-allowed;
+}
+.btn-default[disabled], .btn-default[disabled]:hover, .btn-default[disabled]:focus, .btn-default[disabled]:active, .btn-default[disabled].active,
+.btn-default fieldset[disabled],
+.btn-default fieldset[disabled]:hover,
+.btn-default fieldset[disabled]:focus,
+.btn-default fieldset[disabled]:active,
+.btn-default fieldset[disabled].active {
+  background-color: #5e6369;
+  border-color: #595e64;
+  color: rgba(255, 255, 255, 0.9);
+  transform: none;
+}
+.btn-default.engaged {
+  border-width: 3px;
+  background-color: white;
+  border-color: #4c6586;
+  color: #000;
 }
 
 .btn-primary {
   display: inline-flex;
   vertical-align: middle;
+  align-items: center;
+  cursor: pointer;
   user-select: none;
+  touch-action: manipulation;
+  font-family: inherit;
   text-align: center;
   line-height: inherit;
   font-size: inherit;
   font-weight: inherit;
-  color: green;
+  text-decoration: none;
+  height: 42px;
+  padding: 5px 10px;
+  gap: 5px;
+  background-color: lightgreen;
+  color: #000;
+  border: 1px solid lightgreen;
+}
+.btn-primary:hover {
+  text-decoration: none;
+  background-color: #bcf5bc;
+  color: #000;
+  border: 1px solid #bcf5bc;
+}
+.btn-primary:focus-visible:focus-visible {
+  position: relative;
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+.btn-primary:focus-visible:focus-visible::after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid white;
+  outline: 3px solid black;
+}
+.btn-primary:focus-visible:active, .btn-primary:focus-visible.engaged {
+  outline: none;
+}
+.btn-primary:active {
+  transform: scale(0.95);
+  background-color: #e8fce8;
+  color: #000;
+  border: 1px solid #e8fce8;
+}
+.btn-primary[disabled],
+.btn-primary fieldset[disabled] {
+  background-color: #d9d9d9;
+  border-color: #d9d9d9;
+  color: rgba(0, 0, 0, 0.9);
+  cursor: not-allowed;
+}
+.btn-primary[disabled], .btn-primary[disabled]:hover, .btn-primary[disabled]:focus, .btn-primary[disabled]:active, .btn-primary[disabled].active,
+.btn-primary fieldset[disabled],
+.btn-primary fieldset[disabled]:hover,
+.btn-primary fieldset[disabled]:focus,
+.btn-primary fieldset[disabled]:active,
+.btn-primary fieldset[disabled].active {
+  background-color: #d9d9d9;
+  border-color: #e5ffe5;
+  color: rgba(0, 0, 0, 0.9);
+  transform: none;
+}
+.btn-primary.engaged {
+  border-width: 3px;
+  background-color: white;
+  border-color: lightgreen;
+  color: #000;
+}
+
+.btn {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  font-family: inherit;
+  text-align: center;
+  line-height: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+}
+
+.btn-lg {
+  height: 80px;
+  padding: 20px 30px;
+  gap: 5px;
+}
+
+.btn-secondary {
+  background-color: #7e2a58;
+  color: #fff;
+  border: 1px solid #7e2a58;
+}
+.btn-secondary:hover {
+  text-decoration: none;
+  background-color: #581d3d;
+  color: #fff;
+  border: 1px solid #581d3d;
+}
+.btn-secondary:focus-visible:focus-visible {
+  position: relative;
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+.btn-secondary:focus-visible:focus-visible::after {
+  content: " ";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid white;
+  outline: 3px solid black;
+}
+.btn-secondary:focus-visible:active, .btn-secondary:focus-visible.engaged {
+  outline: none;
+}
+.btn-secondary:active {
+  transform: scale(0.95);
+  background-color: #321123;
+  color: #fff;
+  border: 1px solid #321123;
+}
+.btn-secondary[disabled],
+.btn-secondary fieldset[disabled] {
+  background-color: #584851;
+  border-color: #584851;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: not-allowed;
+}
+.btn-secondary[disabled], .btn-secondary[disabled]:hover, .btn-secondary[disabled]:focus, .btn-secondary[disabled]:active, .btn-secondary[disabled].active,
+.btn-secondary fieldset[disabled],
+.btn-secondary fieldset[disabled]:hover,
+.btn-secondary fieldset[disabled]:focus,
+.btn-secondary fieldset[disabled]:active,
+.btn-secondary fieldset[disabled].active {
+  background-color: #584851;
+  border-color: #53444c;
+  color: rgba(255, 255, 255, 0.9);
+  transform: none;
+}
+.btn-secondary.engaged {
+  border-width: 3px;
+  background-color: white;
+  border-color: #7e2a58;
+  color: #000;
+}
+
+body {
+  font-family: "Open Sans", Arial, Helvetica, sans-serif;
 }
 
 /*# sourceMappingURL=example.css.map */

@@ -1,9 +1,27 @@
-@use "flex-buttons" as btn;
+// You can modify the basic settings on import
+@use "flex-buttons" as btn with (
+    $button-color: #4c6586,
+    $button-text-color: #fff
+);
 
 .btn-default {
-    @include btn.make-button()
+    @include btn.make-button();
 }
 
+// Or modify the variables when including the mixin
 .btn-primary {
-    @include btn.make-button($btn__bg-color: green)
+    @include btn.make-button($button-color: lightgreen, $button-text-color: #000);
+}
+
+// Building utility classes is also supported
+.btn { @include btn.make-button($set-basics: true, $set-size: false, $set-design: false); }
+.btn-lg { @include btn.make-button($set-basics: false, $set-size: true, $set-design: false, $input-field-height: 80px, $padding-small-x: 30px, $padding-small-y: 20px); }
+.btn-secondary { @include btn.make-button($set-basics: false, $set-size: false, $set-design: true, $button-color: #7e2a58);}
+// then use class="btn btn-lg btn-secondary" in html
+
+
+
+// Other stylecode, unrelated to the buttons
+body {
+    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
 }
