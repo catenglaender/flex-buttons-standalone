@@ -1,8 +1,9 @@
 @use "sass:map";
 @use "sass:math";
 @use "sass:color";
+@use "sass:string";
 
-$debug-mode: false;
+$debug-mode: false !default;
 
 //
 // BASIC SETTINGS
@@ -17,6 +18,7 @@ $button-text-color: black !default;
 $text-decoration: none !default;
 $button-style-outlined: false !default;
 $border-size: 1px !default;
+$border-radius: 0px !default;
 $line-height: inherit !default;
 // button height is by default largely determined by this value
 $input-field-height: 42px !default;
@@ -54,12 +56,13 @@ $focus_contrast-outline_width: 2px;
 $focus_ring: $focus_width solid $focus_color;
 $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-outline_color;
 
-@mixin focus-ring() {
+@mixin focus-ring($border-radius: $border-radius) {
     &:focus-visible {
         position: relative; // so before element
         // outer contrast line
         outline: $focus_contrast-outline;
         outline-offset: $focus_width + $focus_contrast-outline_width - 1px;
+        border-radius: $border-radius;
 
         &::after {
             content: " ";
@@ -72,6 +75,7 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
             border: $focus_contrast-outline;
             // middle focus line
             outline: $focus_ring;
+            border-radius: $border-radius;
         }
     }
 
@@ -96,6 +100,7 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
     $text-decoration: $text-decoration,
     $button-style-outlined: $button-style-outlined,
     $border-size: $border-size,
+    $border-radius: $border-radius,
     $line-height: $line-height,
     $input-field-height: $input-field-height,
     $padding-small-x: $padding-small-x,
@@ -145,12 +150,20 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
     $active_transform: scale(.95),
 
     $hover_cursor: pointer,
-    $disabled_cursor: not-allowed) {
+    $disabled_cursor: not-allowed,
+    
+    $space-between-btns: math.div($padding-small-x, 2)) {
 
     @if $set-basics {
         // outside
         display: inline-flex;
         vertical-align: middle;
+        @if $border-radius != null or $border-radius != 0px {
+            border-radius: $border-radius;
+        }
+        & + & {
+            margin-left: $space-between-btns;
+        }
 
         // inside
         align-items: center;
@@ -190,9 +203,7 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
         }
 
         // KEYBOARD FOCUS
-        &:focus-visible {
-            @include focus-ring();
-        }
+        @include focus-ring();
 
         // ACTIVE (BEING PRESSED)
         &:active {
@@ -230,6 +241,36 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
             background-color: $engaged_bg-color;
             border-color: $engaged_border-color;
             color: $engaged_text-color;
+        }
+    }
+}
+
+@mixin make-button-group($btn-class-name: button, $border-radius) {
+    @if $debug-mode {
+        @if (string.index($btn-class-name, '.')) == null {
+            @warn "Note that $btn-class-name must include the `.` unless they are html elements like `button`";
+        }
+    }
+    #{$btn-class-name} {
+        &,
+        &:focus-visible,
+        &:focus-visible::after {
+            border-radius: 0;
+        }
+        + #{$btn-class-name} {
+            margin-left: 0 !important;
+        }
+        &:first-child,
+        &:first-child:focus-visible,
+        &:first-child:focus-visible::after  {
+            border-start-start-radius: $border-radius;
+            border-end-start-radius: $border-radius;
+        }
+        &:last-child,
+        &:last-child:focus-visible,
+        &:last-child:focus-visible::after {
+            border-end-end-radius: $border-radius;
+            border-start-end-radius: $border-radius;
         }
     }
 }

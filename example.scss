@@ -1,7 +1,9 @@
 // You can modify the basic settings on import
 @use "flex-buttons" as btn with (
     $button-color: #4c6586,
-    $button-text-color: #fff
+    $button-text-color: #fff,
+    $border-radius: 10px,
+    $debug-mode: true
 );
 
 .btn-default {
@@ -18,6 +20,10 @@
 .btn-lg { @include btn.make-button($set-basics: false, $set-size: true, $set-design: false, $input-field-height: 80px, $padding-small-x: 30px, $padding-small-y: 20px); }
 .btn-secondary { @include btn.make-button($set-basics: false, $set-size: false, $set-design: true, $button-color: #7e2a58);}
 // then use class="btn btn-lg btn-secondary" in html
+
+.btn-group {
+    @include btn.make-button-group($border-radius: btn.$border-radius);
+}
 
 
 
