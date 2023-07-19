@@ -2,7 +2,6 @@
 @use "flex-buttons" as btn with (
     $button-color: #4c6586,
     $button-text-color: #fff,
-    $border-radius: 10px,
     $debug-mode: true
 );
 
@@ -11,8 +10,15 @@
 }
 
 // Or modify the variables when including the mixin
+$btn-primary-height: 61px;
+$btn-primary-color: lightgreen;
+$btn-primary-border-radius: 10px;
 .btn-primary {
-    @include btn.make-button($button-color: lightgreen, $button-text-color: #000);
+    @include btn.make-button($button-color: $btn-primary-color, $button-text-color: #000, $border-radius: $btn-primary-border-radius, $input-field-height: $btn-primary-height);
+}
+
+.btn-group {
+    @include btn.make-button-group($border-radius: 10px);
 }
 
 // Building utility classes is also supported
@@ -21,8 +27,33 @@
 .btn-secondary { @include btn.make-button($set-basics: false, $set-size: false, $set-design: true, $button-color: #7e2a58);}
 // then use class="btn btn-lg btn-secondary" in html
 
-.btn-group {
-    @include btn.make-button-group($border-radius: btn.$border-radius);
+// Fullwidth Button
+.btn-menu {
+    @include btn.make-button(
+        $set-full-width: true,
+        $input-field-height: 66px,
+        $button-color: lightgray,
+        $button-text-color: black,
+        $border-color: gray,
+        $hover_border-color: gray,
+        $active_border-color: gray,
+        $border-width: 0 0 1px 0,
+        $hover_border-width: 0 0 1px 0,
+        $active_border-width: 0 0 1px 0,
+        $active_transform: null,
+        $space-between-btns: null
+        );
+        &:last-child {
+            border-bottom: none;
+        }
+}
+
+.btn-board {
+    @include btn.make-button-board(
+        $btn-class-name: ".btn-primary",
+        $board-height: $btn-primary-height,
+        $board-bg: $btn-primary-color,
+        $border-radius: $btn-primary-border-radius);
 }
 
 
@@ -30,4 +61,10 @@
 // Other stylecode, unrelated to the buttons
 body {
     font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+}
+* {
+    box-sizing: border-box;
+}
+.limited-width {
+    max-width: 500px;
 }

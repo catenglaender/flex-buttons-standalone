@@ -17,7 +17,7 @@ $button-color: lightblue !default;
 $button-text-color: black !default;
 $text-decoration: none !default;
 $button-style-outlined: false !default;
-$border-size: 1px !default;
+$border-width: 1px !default;
 $border-radius: 0px !default;
 $line-height: inherit !default;
 // button height is by default largely determined by this value
@@ -26,6 +26,7 @@ $padding-small-x: 10px !default;
 // padding y is only a small buffer for when the button contains multiple lines
 $padding-small-y: 5px !default;
 $inner-spacing: math.div($padding-small-x, 2);
+$set-full-width: false;
 
 
 //
@@ -37,13 +38,17 @@ $inner-spacing: math.div($padding-small-x, 2);
     @if type-of($dark-color) !="color" or type-of($light-color) !="color" {
         @error "You must input a color value.";
     }
+
     @if $debug-mode {
         @if lightness($color) < $threshold {
             @debug "#{$color}: #{lightness($color)} lightness pairs with light color for highest contrast.";
-        } @else {
+        }
+
+        @else {
             @debug "#{$color}: #{lightness($color)} lightness pairs with dark color for highest contrast.";
         }
     }
+
     @return if(lightness($color) < $threshold, $light-color, $dark-color);
 }
 
@@ -55,6 +60,10 @@ $focus_width: 3px;
 $focus_contrast-outline_width: 2px;
 $focus_ring: $focus_width solid $focus_color;
 $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-outline_color;
+
+//
+// BUTTON CREATION
+//
 
 @mixin focus-ring($border-radius: $border-radius) {
     &:focus-visible {
@@ -86,8 +95,7 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
     }
 }
 
-@mixin make-button(
-    //
+@mixin make-button( //
     // Use any of these variables during include to customize the button style
     //
 
@@ -100,13 +108,14 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
     $button-text-color: $button-text-color,
     $text-decoration: $text-decoration,
     $button-style-outlined: $button-style-outlined,
-    $border-size: $border-size,
+    $border-width: $border-width,
     $border-radius: $border-radius,
     $line-height: $line-height,
     $input-field-height: $input-field-height,
     $padding-small-x: $padding-small-x,
     $padding-small-y: $padding-small-y,
     $inner-spacing: $inner-spacing,
+    $set-full-width: $set-full-width,
 
     // SIZE
     $set-size: true,
@@ -144,25 +153,37 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
 
     $hover_text-decoration: $text-decoration,
 
-    $hover_border-size: $border-size,
+    $hover_border-width: $border-width,
 
-    $active_border-size: $border-size,
-
+    $active_border-width: $border-width,
     $active_transform: scale(.95),
 
     $hover_cursor: pointer,
+
+    $disabled_border-width: $border-width,
+    $disabled_hover_border-width: $border-width,
     $disabled_cursor: not-allowed,
-    
+
     $space-between-btns: math.div($padding-small-x, 2)) {
 
     @if $set-basics {
+
         // outside
-        display: inline-flex;
-        vertical-align: middle;
-        @if $border-radius != null or $border-radius != 0px {
+        @if $set-full-width {
+            display: flex;
+            width: 100%;
+        }
+
+        @else {
+            display: inline-flex;
+            vertical-align: middle;
+        }
+
+        @if $border-radius !=null or $border-radius !=0px {
             border-radius: $border-radius;
         }
-        & + & {
+
+        &+& {
             margin-left: $space-between-btns;
         }
 
@@ -182,17 +203,19 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
     }
 
     @if $set-size {
-        height: if($set-size, $input-field-height, null);
+        min-height: $input-field-height;
 
-        padding: if($set-size, $padding-small-y $padding-small-x, null);
-        gap: if($set-size, $inner-spacing, null);
+        padding: $padding-small-y $padding-small-x;
+        gap: $inner-spacing;
     }
 
     @if $set-design {
         // DEFAULT
         background-color: $bg-color;
         color: $text-color;
-        border: $border-size solid $border-color;
+        border-width: $border-width;
+        border-style: solid;
+        border-color: $border-color;
 
         // HOVER
         &:hover {
@@ -200,7 +223,9 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
 
             background-color: $hover_bg-color;
             color: $hover_text-color;
-            border: $hover_border-size solid $hover_border-color;
+            border-width: $hover_border-width;
+            border-style: solid;
+            border-color: $hover_border-color;
         }
 
         // KEYBOARD FOCUS
@@ -212,63 +237,94 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
 
             background-color: $active_bg-color;
             color: $active_text-color;
-            border: $active_border-size solid $active_border-color;
+            border-width: $active_border-width;
+            border-style: solid;
+            border-color: $active_border-color;
         }
 
         // DEACTIVATED
         &[disabled],
         fieldset[disabled] {
             background-color: $disabled_bg-color;
+            border-width: $disabled_border-width;
+            border-style: solid;
             border-color: $disabled_border-color;
             color: $disabled_text-color;
             cursor: $disabled_cursor;
-            transform: none;
-            @if $disabled_hover_bg-color != $disabled_bg-color
-                or $disabled_hover_border-color != $disabled_border-color
-                or $disabled_hover_text-color != $disabled_text-color {
-                    &:hover,
-                    &:focus,
-                    &:active,
-                    &.active {
-                background-color: $disabled_hover_bg-color;
-                border-color: $disabled_hover_border-color;
-                color: $disabled_hover_text-color;
+            transform: if($active-transform, none, null);
+
+            @if $disabled_hover_bg-color !=$disabled_bg-color
+            or $disabled_hover_border-color !=$disabled_border-color
+            or $disabled_hover_text-color !=$disabled_text-color
+            or $disabled_hover_border-width !=$disabled_border-width {
+
+                &:hover,
+                &:focus,
+                &:active,
+                &.active {
+                    background-color: $disabled_hover_bg-color;
+                    border-width: $disabled_hover_border-width;
+                    border-style: solid;
+                    border-color: $disabled_hover_border-color;
+                    color: $disabled_hover_text-color;
                 }
             }
         }
 
         // ENGAGED (CHECKED)
         &.engaged {
-            border-width: $engaged_border-width;
             background-color: $engaged_bg-color;
+            border-width: $engaged_border-width;
+            border-style: solid;
             border-color: $engaged_border-color;
             color: $engaged_text-color;
+        }
+
+        @if $set-full-width {
+            .button-content_v-align-top {
+                display: flex;
+                text-align: left;
+                gap: $inner-spacing;
+                align-items: start;
+            }
+
+            .button-content_grow {
+                flex-grow: 1;
+            }
         }
     }
 }
 
-@mixin make-button-group($btn-class-name: button, $border-radius) {
+@mixin make-button-group(
+    $btn-class-name: button,
+    $border-radius
+    ) {
     @if $debug-mode {
-        @if (string.index($btn-class-name, '.')) == null {
+        @if (string.index($btn-class-name, '.'))==null {
             @warn "Note that $btn-class-name must include the `.` unless they are html elements like `button`";
         }
     }
+
     #{$btn-class-name} {
-        + #{$btn-class-name} {
+        +#{$btn-class-name} {
             margin-left: 0 !important;
         }
-        @if $border-radius != null or $border-radius != 0px {
+
+        @if $border-radius !=null or $border-radius !=0px {
+
             &,
             &:focus-visible,
             &:focus-visible::after {
                 border-radius: 0;
             }
+
             &:first-child,
             &:first-child:focus-visible,
-            &:first-child:focus-visible::after  {
+            &:first-child:focus-visible::after {
                 border-start-start-radius: $border-radius;
                 border-end-start-radius: $border-radius;
             }
+
             &:last-child,
             &:last-child:focus-visible,
             &:last-child:focus-visible::after {
@@ -276,5 +332,32 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
                 border-start-end-radius: $border-radius;
             }
         }
+    }
+}
+
+@mixin make-button-board (
+    $btn-class-name: button,
+    $border-radius: $border-radius,
+    $padding-x: $padding-small-x,
+    $padding-y: $padding-small-y,
+    $button-height: $input-field-height,
+    $board-height: $input-field-height,
+    $board-bg: $button-color
+) {
+    @if $debug-mode {
+        @if (string.index($btn-class-name, '.'))==null {
+            @warn "Note that $btn-class-name must include the `.` unless they are html elements like `button`";
+        }
+    }
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    background-color: $board-bg;
+    height: $board-height;
+    border-radius: $border-radius;
+    padding: $padding-y $padding-x;
+
+    #{$btn-class-name} {
+        min-height: $button-height;
     }
 }
