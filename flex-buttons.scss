@@ -86,7 +86,8 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
     }
 }
 
-@mixin make-button( //
+@mixin make-button(
+    //
     // Use any of these variables during include to customize the button style
     //
 
@@ -126,9 +127,9 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
     $disabled_text-color: color.scale($button-text-color, $alpha: -10%),
     $disabled_border-color: contrast-color($button-text-color, color.scale($bg-color, $saturation: -80%, $lightness: -5%), color.adjust($bg-color, $saturation: -80%, $lightness: 10%)),
 
-    $disabled_hover_bg-color: contrast-color($button-text-color, color.scale($bg-color, $saturation: -80%, $lightness: -5%), color.adjust($bg-color, $saturation: -80%, $lightness: 10%)),
-    $disabled_hover_text-color: color.scale($button-text-color, $alpha: -10%),
-    $disabled_hover_border-color: contrast-color($button-text-color, color.scale($bg-color, $saturation: -80%, $lightness: -10%), color.adjust($bg-color, $saturation: 80%, $lightness: 20%)),
+    $disabled_hover_bg-color: $disabled_bg-color,
+    $disabled_hover_text-color: $disabled_text-color,
+    $disabled_hover_border-color: $disabled_border-color,
 
     $active_bg-color: contrast-color($button-text-color, darken($bg-color, 20%), lighten($bg-color, 20%)),
     $active_text-color: $button-text-color,
@@ -221,17 +222,18 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
             border-color: $disabled_border-color;
             color: $disabled_text-color;
             cursor: $disabled_cursor;
-
-            &,
-            &:hover,
-            &:focus,
-            &:active,
-            &.active {
+            transform: none;
+            @if $disabled_hover_bg-color != $disabled_bg-color
+                or $disabled_hover_border-color != $disabled_border-color
+                or $disabled_hover_text-color != $disabled_text-color {
+                    &:hover,
+                    &:focus,
+                    &:active,
+                    &.active {
                 background-color: $disabled_hover_bg-color;
                 border-color: $disabled_hover_border-color;
                 color: $disabled_hover_text-color;
-
-                transform: none;
+                }
             }
         }
 
@@ -252,25 +254,27 @@ $focus_contrast-outline: $focus_contrast-outline_width solid $focus_contrast-out
         }
     }
     #{$btn-class-name} {
-        &,
-        &:focus-visible,
-        &:focus-visible::after {
-            border-radius: 0;
-        }
         + #{$btn-class-name} {
             margin-left: 0 !important;
         }
-        &:first-child,
-        &:first-child:focus-visible,
-        &:first-child:focus-visible::after  {
-            border-start-start-radius: $border-radius;
-            border-end-start-radius: $border-radius;
-        }
-        &:last-child,
-        &:last-child:focus-visible,
-        &:last-child:focus-visible::after {
-            border-end-end-radius: $border-radius;
-            border-start-end-radius: $border-radius;
+        @if $border-radius != null or $border-radius != 0px {
+            &,
+            &:focus-visible,
+            &:focus-visible::after {
+                border-radius: 0;
+            }
+            &:first-child,
+            &:first-child:focus-visible,
+            &:first-child:focus-visible::after  {
+                border-start-start-radius: $border-radius;
+                border-end-start-radius: $border-radius;
+            }
+            &:last-child,
+            &:last-child:focus-visible,
+            &:last-child:focus-visible::after {
+                border-end-end-radius: $border-radius;
+                border-start-end-radius: $border-radius;
+            }
         }
     }
 }
